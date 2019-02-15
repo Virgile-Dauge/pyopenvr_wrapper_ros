@@ -7,7 +7,7 @@ from geometry_msgs.msg import Pose
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('talker', anonymous=True)
+        rospy.init_node('publisher_pose_node')
         pyopenvr_wrapper = pose_openvr_wrapper.OpenvrWrapper(
             '../cfg/config.json')
         pp.pprint(pyopenvr_wrapper.devices)

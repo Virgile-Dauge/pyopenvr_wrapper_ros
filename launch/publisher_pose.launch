@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="pyopenvr_wrapper_ros" type="publisher_pose_node.py" name="publisher_pose_node" cwd="node" output="screen">
+  </node>
+</launch>
