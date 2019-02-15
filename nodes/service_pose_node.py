@@ -32,7 +32,7 @@ def send_relative_poseStamped(req):
         sampling_frequency=req.frequency, ref_device_key=req.reference)
     t = PoseStamped()
     t.header.stamp = rospy.Time.now()
-    t.header.frame_id = req.device
+    t.header.frame_id = req.reference
     t.pose.position.x = np.mean(sample['x'])
     t.pose.position.z = np.mean(sample['y'])
     t.pose.position.y = np.mean(sample['z'])
@@ -46,8 +46,17 @@ def send_relative_poseStamped(req):
 if __name__ == '__main__':
 
     rospy.init_node('service_pose_node')
-    pyopenvr_wrapper = pose_openvr_wrapper.OpenvrWrapper(
-        '../cfg/config.json')
+    rate = rospy.Rate(10)  # 10hz
+    steamVR_is_running = False
+    while(not steamVR_is_running):
+        try:
+            pyopenvr_wrapper = pose_openvr_wrapper.OpenvrWrapper(
+                '../cfg/config.json')
+            steamVR_is_running = True
+        except rospy.ROSInterruptException:
+            print('steamVR_not_running')
+            rate.sleep()
+    print('SteamVR is running, printing dicovered devices :')
     pp.pprint(pyopenvr_wrapper.devices)
 
     service = rospy.Service(

@@ -1,0 +1,6 @@
+string reference
+string device
+int32 samples
+float64 frequency
+---
+geometry_msgs/PoseStamped pose
