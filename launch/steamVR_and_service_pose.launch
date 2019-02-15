@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="aliencontrol" type="aliencontrol" name="aliencontrol_top">
+    <param name="cmd" value="'bash $STEAMVR_DIR/bin/vrstartup.sh &'"/>
+  </node>
+  <node pkg="pyopenvr_wrapper_ros" type="service_pose_node.py" name="service_pose_node" cwd="node" output="screen">
+  </node>
+</launch>
