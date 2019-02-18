@@ -1,4 +1,7 @@
 <launch>
-  <node pkg="pyopenvr_wrapper_ros" type="service_pose_node.py" name="service_pose_node" cwd="node" output="screen">
+  <arg name="namespace" default="robot1" />
+  <node ns="$(arg namespace)" pkg="pyopenvr_wrapper_ros"
+    type="service_pose_node.py" name="service_pose_node"
+    cwd="node" output="screen">
   </node>
 </launch>
