@@ -1,6 +1,6 @@
 <launch>
   <arg name="namespace" default="robot1" />
-  <node pkg="tf" type="static_transform_publisher" name="world_offset" args="0 0 0 0 0 0 map vive_world 100" />
+  <!-- <node pkg="tf" type="static_transform_publisher" name="world_offset" args="0 0 0 0 0 0 map vive_world 100" /> -->
   <node ns="$(arg namespace)" pkg="pyopenvr_wrapper_ros"
         type="publisher_pose_node.py"
         name="publisher_pose_node" cwd="node" output="screen">
