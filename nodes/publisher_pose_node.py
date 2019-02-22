@@ -21,7 +21,6 @@ if __name__ == '__main__':
 
         while not rospy.is_shutdown():
             for device, value in pyopenvr_wrapper.devices.items():
-                sample = pyopenvr_wrapper.sample(device, samples_count=1)
                 pose_stamped_msg = PoseStamped()
                 transform = Transform(
                     pyopenvr_wrapper.get_corrected_transformation_matrix(
