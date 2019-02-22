@@ -1,0 +1,7 @@
+<launch>
+  <arg name="namespace" default="robot1" />
+  <node ns="$(arg namespace)" pkg="pyopenvr_wrapper_ros"
+        type="publisher_tf_node.py"
+        name="publisher_tf_node" cwd="node" output="screen">
+  </node>
+</launch>
