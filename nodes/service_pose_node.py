@@ -7,7 +7,12 @@ import numpy as np
 import pose_openvr_wrapper
 import pprint as pp
 from pose_transform import Transform
-from pyopenvr_wrapper_ros.srv import GetPoseStamped, GetRelativePoseStamped
+from pyopenvr_wrapper_ros.srv import GetPoseStamped
+from pyopenvr_wrapper_ros.srv import GetAllPoseStamped
+from pyopenvr_wrapper_ros.srv import GetAllPoseStampedResponse
+from pyopenvr_wrapper_ros.srv import GetRelativePoseStamped
+from pyopenvr_wrapper_ros.srv import GetAllRelativePoseStamped
+from pyopenvr_wrapper_ros.srv import GetAllRelativePoseStampedResponse
 
 def send_poseStamped(req):
     # We get samples from device
@@ -29,6 +34,37 @@ def send_poseStamped(req):
     pose_stamped_msg.pose.orientation.z = quaternion.z
     pose_stamped_msg.pose.orientation.w = quaternion.w
     return pose_stamped_msg
+
+def send_all_poseStamped(req):
+    # We get samples from device
+    dict = pyopenvr_wrapper.get_all_transformation_matrices(
+        samples_count=req.samples,
+        sampling_frequency=req.frequency)
+    keys = []
+    poses = []
+    for key, matrix in dict.items():
+        keys.append(key)
+        transform = Transform(matrix)
+        quaternion = transform.quaternion()
+        position = transform.position()
+        pose_stamped_msg = PoseStamped()
+        pose_stamped_msg.header.stamp = rospy.Time.now()
+        pose_stamped_msg.header.frame_id = 'map'
+        pose_stamped_msg.pose.position.x = position[0]
+        pose_stamped_msg.pose.position.y = position[1]
+        pose_stamped_msg.pose.position.z = position[2]
+        pose_stamped_msg.pose.orientation.x = quaternion.x
+        pose_stamped_msg.pose.orientation.y = quaternion.y
+        pose_stamped_msg.pose.orientation.z = quaternion.z
+        pose_stamped_msg.pose.orientation.w = quaternion.w
+        poses.append(pose_stamped_msg)
+
+    response = GetAllPoseStampedResponse()
+    response.keys = keys
+    response.poses = poses
+    return response
+
+
 
 def send_relative_poseStamped(req):
     # We get samples from device
@@ -52,6 +88,35 @@ def send_relative_poseStamped(req):
     pose_stamped_msg.pose.orientation.w = quaternion.w
     return pose_stamped_msg
 
+def send_all_relative_poseStamped(req):
+    # We get samples from device
+    dict = pyopenvr_wrapper.get_all_transformation_matrices(
+        ref_device_key=req.reference,
+        samples_count=req.samples,
+        sampling_frequency=req.frequency)
+    keys = []
+    poses = []
+    for key, matrix in dict.items():
+        keys.append(key)
+        transform = Transform(matrix)
+        quaternion = transform.quaternion()
+        position = transform.position()
+        pose_stamped_msg = PoseStamped()
+        pose_stamped_msg.header.stamp = rospy.Time.now()
+        pose_stamped_msg.header.frame_id = 'map'
+        pose_stamped_msg.pose.position.x = position[0]
+        pose_stamped_msg.pose.position.y = position[1]
+        pose_stamped_msg.pose.position.z = position[2]
+        pose_stamped_msg.pose.orientation.x = quaternion.x
+        pose_stamped_msg.pose.orientation.y = quaternion.y
+        pose_stamped_msg.pose.orientation.z = quaternion.z
+        pose_stamped_msg.pose.orientation.w = quaternion.w
+        poses.append(pose_stamped_msg)
+
+    response = GetAllRelativePoseStampedResponse()
+    response.keys = keys
+    response.poses = poses
+    return response
 
 if __name__ == '__main__':
 
@@ -73,7 +138,14 @@ if __name__ == '__main__':
         'get_poseStamped', GetPoseStamped, send_poseStamped)
 
     service = rospy.Service(
+        'get_all_poseStamped', GetAllPoseStamped, send_all_poseStamped)
+
+    service = rospy.Service(
         'get_relative_poseStamped', GetRelativePoseStamped,
         send_relative_poseStamped)
+
+    service = rospy.Service(
+        'get_all_relative_poseStamped', GetAllRelativePoseStamped,
+        send_all_relative_poseStamped)
 
     rospy.spin()
