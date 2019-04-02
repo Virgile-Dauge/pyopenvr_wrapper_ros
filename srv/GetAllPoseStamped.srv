@@ -1,0 +1,5 @@
+int32 samples
+float64 frequency
+---
+string[] keys
+geometry_msgs/PoseStamped[] poses
