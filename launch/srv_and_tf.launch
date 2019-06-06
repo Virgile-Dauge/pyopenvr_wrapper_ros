@@ -1,5 +1,5 @@
 <launch>
-  <arg name="namespace" default="local" />
+  <arg name="namespace" default="robot1" />
   <node ns="$(arg namespace)" pkg="pyopenvr_wrapper_ros"
     type="srv_and_tf.py" name="service_pose_node"
     cwd="node" output="screen">
