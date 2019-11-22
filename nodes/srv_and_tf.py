@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """coucou."""
 import rospy
-import tf
+import tf2_ros
 from geometry_msgs.msg import PoseStamped
 import pose_openvr_wrapper
 import pprint as pp
@@ -149,7 +149,7 @@ if __name__ == '__main__':
         send_all_relative_poseStamped)
 
     try:
-        broadcaster = tf.TransformBroadcaster()
+        broadcaster = tf2.TransformBroadcaster()
         rate = rospy.Rate(250)
         while not rospy.is_shutdown():
             matrices = pyopenvr_wrapper.get_all_transformation_matrices(
