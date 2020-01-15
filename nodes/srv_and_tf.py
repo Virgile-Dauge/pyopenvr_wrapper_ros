@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """coucou."""
 import rospy
-import tf2_ros
+import tf2_py
+import tf
 from geometry_msgs.msg import PoseStamped
 import pose_openvr_wrapper
 import pprint as pp
@@ -13,6 +14,9 @@ from pyopenvr_wrapper_ros.srv import GetAllPoseStampedResponse
 from pyopenvr_wrapper_ros.srv import GetRelativePoseStamped
 from pyopenvr_wrapper_ros.srv import GetAllRelativePoseStamped
 from pyopenvr_wrapper_ros.srv import GetAllRelativePoseStampedResponse
+
+import subprocess
+import os
 
 def send_poseStamped(req):
     # We get samples from device
@@ -120,7 +124,10 @@ def send_all_relative_poseStamped(req):
 
 if __name__ == '__main__':
 
-    rospy.init_node('service_pose_node')
+    rospy.init_node('local_poses_node')
+    # steam_runtime = os.path.expanduser('~/.steam/steam/ubuntu12_32/steam-runtime/run.sh')
+    # vr_monitor = os.path.expanduser('~/.steam/steam/steamapps/common/SteamVR/bin/vrmonitor.sh')
+    # subprocess.run([steam_runtime, vr_monitor])
     rate = rospy.Rate(10)  # 10hz
     steamVR_is_running = False
     while(not steamVR_is_running):
@@ -131,8 +138,8 @@ if __name__ == '__main__':
         except rospy.ROSInterruptException:
             print('steamVR_not_running')
             rate.sleep()
-    print('SteamVR is running, printing dicovered devices :')
-    pp.pprint(pyopenvr_wrapper.devices)
+    #print('SteamVR is running, printing dicovered devices :')
+    #pp.pprint(pyopenvr_wrapper.devices)
 
     service = rospy.Service(
         'get_poseStamped', GetPoseStamped, send_poseStamped)
@@ -149,15 +156,13 @@ if __name__ == '__main__':
         send_all_relative_poseStamped)
 
     try:
-        broadcaster = tf2.TransformBroadcaster()
+        broadcaster = tf.TransformBroadcaster()
         rate = rospy.Rate(250)
         while not rospy.is_shutdown():
             matrices = pyopenvr_wrapper.get_all_transformation_matrices(
                 samples_count=1)
             for device, matrix in matrices.items():
-                transform = Transform(
-                    pyopenvr_wrapper.get_all_transformation_matrices(
-                        samples_count=1))
+                transform = Transform(matrix)
                 quaternion = transform.quaternion()
                 position = transform.position()
                 broadcaster.sendTransform(
@@ -170,3 +175,5 @@ if __name__ == '__main__':
             rate.sleep()
     except rospy.ROSInterruptException:
         pass
+
+    #https://answers.ros.org/question/326226/importerror-dynamic-module-does-not-define-module-export-function-pyinit__tf2/

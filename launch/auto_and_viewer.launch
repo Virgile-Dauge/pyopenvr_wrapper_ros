@@ -1,0 +1,4 @@
+<launch>
+  <include file="$(find pyopenvr_wrapper_ros)/launch/auto.launch" />
+  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find pyopenvr_wrapper_ros)/cfg/local_tf_viewer.rviz" />
+</launch>

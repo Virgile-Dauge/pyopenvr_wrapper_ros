@@ -1,0 +1,11 @@
+<launch>
+  <arg name="namespace" default="local" />
+  <node ns="$(arg namespace)" pkg="pyopenvr_wrapper_ros"
+    type="start_steamvr.py" name="steamvr"
+    cwd="node">
+  </node>
+  <node ns="$(arg namespace)" pkg="pyopenvr_wrapper_ros"
+    type="srv_and_tf.py" name="local_poses_node"
+    cwd="node" output="screen">
+  </node>
+</launch>
