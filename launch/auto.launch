@@ -2,6 +2,6 @@
   <arg name="namespace" default="local" />
   <node ns="$(arg namespace)" pkg="pyopenvr_wrapper_ros"
     type="pose_wrapper_node.py" name="poser_node"
-    cwd="node">
+    cwd="node" output="screen">
   </node>
 </launch>

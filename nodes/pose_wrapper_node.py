@@ -27,7 +27,7 @@ class steamvr_process:
         print('SIGINT or CTRL-C detected. Exiting gracefully')
         sys.exit(0)
 
-    def start(self, waiting_time=0.1):
+    def start(self, waiting_time=0.5):
         self.proc = subprocess.Popen([self.steam_runtime, self.vr_monitor],
                                      stderr=subprocess.DEVNULL,
                                      stdout=subprocess.DEVNULL)
@@ -70,7 +70,8 @@ class pose_wrapper:
 
     def start(self):
         self.vr_process.start()
-        rate = rospy.Rate(100)  # 10hz
+        self.reset_lighthouse_db()
+        rate = rospy.Rate(10)  # 10hz
         steamvr_launch_ok = False
         while not steamvr_launch_ok:
             try:
@@ -103,6 +104,10 @@ class pose_wrapper:
                         "local")
             rate.sleep()
 
+    def reset_lighthouse_db(self):
+        lighthouse_db = os.path.expanduser('~/.steam/debian-installation/config/lighthouse/lighthousedb.json')
+        if os.path.exists(lighthouse_db):
+            subprocess.run(['rm', lighthouse_db])
 
 if __name__ == '__main__':
     poser = pose_wrapper()
